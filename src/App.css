@@ -1,3 +1,13 @@
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    background: rgba(245,245,245);
+}
+a {
+  text-decoration: none;
+}
 .App {
   text-align: center;
 }
@@ -5,6 +15,46 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+.container {
+  margin: 80px auto 0 auto;
+  max-width: 1200px;
+}
+.grow {
+  flex-grow: 1;
+}
+
+
+.MuiCard-root {
+  display: flex;
+  text-align:left;
+}
+.MuiCardMedia-root {
+  width: 164px;
+}
+.howCardContainer {
+  display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    position: relative;
+}
+.howCard {
+  width: 100%;
+  max-width: unset !important;
+  margin-bottom: 20px;
+  position: relative;
+  text-align: left;
+}
+.loginFormContainer {
+  max-width: 350px;
+  margin: 0 auto;
+}
+.loginLogoImage {
+  max-width: 200px;
+  margin: 40px auto;
+}
+.MuiButtonBase-root.loginButton {
+  margin-top: 5px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
