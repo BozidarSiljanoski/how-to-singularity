@@ -5,7 +5,8 @@ import {Link} from 'react-router-dom';
 import dayjs from 'dayjs';
 
 // Redux
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
+import { logOutUser, uploadImage } from "../redux/actions/userActions";
 
 // MUI Stuff
 import Button from '@material-ui/core/Button';
@@ -13,6 +14,7 @@ import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 
 // MUI ICONS
 import LocationOn from '@material-ui/icons/LocationOn';
@@ -33,7 +35,10 @@ const styles = (theme) => ({
       '& button': {
         position: 'absolute',
         top: '80%',
-        left: '70%'
+        left: '70%',
+      },
+      '& .button': {
+        boxShadow: '1px 1px 6px rgba(0,0,0,.275)',
       }
     },
     '& .profile-image': {
@@ -45,7 +50,7 @@ const styles = (theme) => ({
       margin: ' 0 auto'
     },
     '& .profile-details': {
-      marginTop: 50,
+      marginTop: 12,
       textAlign: 'center',
       '& span, svg': {
         verticalAlign: 'middle'
@@ -73,10 +78,25 @@ const styles = (theme) => ({
 });
 
 class Profile extends Component {
+  constructor(props) {
+    super(props);
+
+    this.imageInputRef = React.createRef();
+    this.handleEditPicture = this.handleEditPicture.bind(this);
+  }
+
   handleImageChange = (event) => {
     const image = event.target.files[0];
+    const formData = new FormData();
+    formData.append('image', image, image.name);
+    this.props.uploadImage(formData);
     // send to server
-  }
+
+  };
+  handleEditPicture = () => {
+    const fileInput = this.imageInputRef.current;
+    fileInput.click();
+  };
 
   render() {
     const {
@@ -98,14 +118,19 @@ class Profile extends Component {
     let profileMarkup = !loading ? (authenticated ? (
       <Paper className={classes.paper}>
         <div className={classes.profile}>
-          <div className="profile-image">
+          <div className="image-wrapper">
             <img className="profile-image" src={imageUrl} alt="profile"/>
-            <input type="file" id="imageInput" hidden="hidden" onChange={this.handleImageChange}/>
-            <IconButton onClick={this.handleEditPicture} className="button" >
-              <EditIcon color="primary"/>
-            </IconButton>
+            <input type="file"
+                   id="imageInput"
+                   hidden="hidden"
+                   onChange={this.handleImageChange}
+                   ref={this.imageInputRef}
+            />
+              <IconButton className="button"
+                          onClick={this.handleEditPicture}>
+                <EditIcon color="primary"/>
+              </IconButton>
           </div>
-          <hr/>
           <div className="profile-details">
             <MuiLink component={Link} to={`/users/${handle}`} colo="primary" variant="h5">
               @{handle}
@@ -154,13 +179,18 @@ class Profile extends Component {
   }
 }
 
-Profile.propStypes = {
+Profile.propTypes = {
+  logOutUser: PropTypes.func.isRequired,
+  uploadImage: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired
+
 };
+
+const mapActionsToProps = { logOutUser, uploadImage };
 
 const mapStateToProps = (state) => ({
   user: state.user
 });
 
-export default connect(mapStateToProps)(withStyles(styles)(Profile));
+export default connect( mapStateToProps, mapActionsToProps )(withStyles(styles)(Profile));
