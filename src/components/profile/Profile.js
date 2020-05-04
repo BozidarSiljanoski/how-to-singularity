@@ -3,32 +3,40 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {Link} from 'react-router-dom';
 import dayjs from 'dayjs';
+import EditDetails from './EditDetails';
+import './styls.css';
 
 // Redux
-import { connect } from 'react-redux';
-import { logOutUser, uploadImage } from "../redux/actions/userActions";
+import {connect} from 'react-redux';
+import {logOutUser, uploadImage} from "../../redux/actions/userActions";
 
 // MUI Stuff
 import Button from '@material-ui/core/Button';
 import MuiLink from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 
 // MUI ICONS
 import LocationOn from '@material-ui/icons/LocationOn';
 import LinkIcon from '@material-ui/icons/Link';
 import CalendarToday from '@material-ui/icons/CalendarToday';
 import EditIcon from '@material-ui/icons/Edit';
+import KeyboardReturn from '@material-ui/icons/KeyboardReturn';
 
-import {theme} from '../util/theme';
+import MyconButton from "../../util/MyconButton";
 
 const styles = (theme) => ({
   paper: {
-    padding: 20
+    padding: 20,
+    position: 'relative'
   },
   profile: {
+    '& .button': {
+      boxShadow: '1px 1px 6px rgba(0,0,0,.275)',
+    },
+    '& .logoutButton': {
+      display: 'block',
+    },
     '& .image-wrapper': {
       textAlign: 'center',
       position: 'relative',
@@ -36,9 +44,6 @@ const styles = (theme) => ({
         position: 'absolute',
         top: '80%',
         left: '70%',
-      },
-      '& .button': {
-        boxShadow: '1px 1px 6px rgba(0,0,0,.275)',
       }
     },
     '& .profile-image': {
@@ -97,6 +102,10 @@ class Profile extends Component {
     const fileInput = this.imageInputRef.current;
     fileInput.click();
   };
+  handleLogout = () => {
+    this.props.logOutUser();
+  };
+
 
   render() {
     const {
@@ -116,7 +125,7 @@ class Profile extends Component {
     } = this.props;
 
     let profileMarkup = !loading ? (authenticated ? (
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper + ' profile-info-container'}>
         <div className={classes.profile}>
           <div className="image-wrapper">
             <img className="profile-image" src={imageUrl} alt="profile"/>
@@ -126,10 +135,9 @@ class Profile extends Component {
                    onChange={this.handleImageChange}
                    ref={this.imageInputRef}
             />
-              <IconButton className="button"
-                          onClick={this.handleEditPicture}>
-                <EditIcon color="primary"/>
-              </IconButton>
+            <MyconButton tip="Change your Image" btnClassName="button" onClick={this.handleEditPicture}>
+              <EditIcon color="primary"/>
+            </MyconButton>
           </div>
           <div className="profile-details">
             <MuiLink component={Link} to={`/users/${handle}`} colo="primary" variant="h5">
@@ -157,6 +165,10 @@ class Profile extends Component {
             <CalendarToday color="primary"/>{' '}
             <span>Joined {dayjs(createdAt).format('MMM YYYY')}</span>
           </div>
+          <MyconButton tip="Logout" onClick={() => this.handleLogout()} btnClassName="button logoutButton">
+            <KeyboardReturn color="primary"/>
+          </MyconButton>
+          <EditDetails />
         </div>
       </Paper>
     ) : (
@@ -187,10 +199,10 @@ Profile.propTypes = {
 
 };
 
-const mapActionsToProps = { logOutUser, uploadImage };
+const mapActionsToProps = {logOutUser, uploadImage};
 
 const mapStateToProps = (state) => ({
   user: state.user
 });
 
-export default connect( mapStateToProps, mapActionsToProps )(withStyles(styles)(Profile));
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(Profile));

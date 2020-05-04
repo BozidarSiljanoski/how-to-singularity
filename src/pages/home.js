@@ -1,47 +1,32 @@
 import React, {Component} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Axios from 'axios';
+import PropTypes from 'prop-types';
 
 // Components
 import How from '../components/How';
-import Profile from '../components/Profile';
+import Profile from '../components/profile/Profile';
+
+import { connect } from 'react-redux';
+import { getHows } from '../redux/actions/dataActions';
 
 export class home extends Component {
 
   state = {
     hows: null
-  }
+  };
 
   componentDidMount() {
-    // fetch('/hows')
-    //     .then((response) => {
-    //         return response.json();
-    //     })
-    //     .then((data) => {
-    //         this.setState({
-    //           hows: data
-    //         });
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //     });
-
-    Axios.get('/hows')
-      .then((res) => {
-        this.setState({
-          hows: res.data
-        })
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+   this.props.getHows();
   }
 
   render() {
 
-    let recentHowsMarkup = this.state.hows ? (
-      this.state.hows.map((value, key) => <How key={key} how={value}/>)
-    ) : 'Loading...';
+    const { hows, loading } = this.props.data;
+
+    let recentHowsMarkup = !loading ?
+     hows.map((value, key) => <How key={key} how={value}/>)
+     : 'Loading...';
 
     return (
       <Grid container spacing={2}>
@@ -56,4 +41,13 @@ export class home extends Component {
   }
 }
 
-export default home
+home.propTypes = {
+  getHows: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  data: state.data
+});
+
+export default connect(mapStateToProps, {getHows} )(home)
