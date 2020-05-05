@@ -1,4 +1,10 @@
-import { SET_HOWS, LIKE_HOW, UNLIKE_HOW, LOADING_DATA } from "../types";
+import {
+  SET_HOWS,
+  LIKE_HOW,
+  UNLIKE_HOW,
+  LOADING_DATA,
+  DELETE_HOW
+} from "../types";
 
 const initialState = {
   hows: [],
@@ -24,6 +30,12 @@ export default function(state = initialState, action) {
     case UNLIKE_HOW:
       let index = state.hows.findIndex((how) => how.howId === action.payload.howId);
       state.hows[index] = action.payload;
+      return {
+        ...state
+      };
+    case DELETE_HOW:
+      let deleteIndex = state.hows.findIndex(how => how.howId === action.payload)
+      state.hows.splice(deleteIndex, 1);
       return {
         ...state
       };

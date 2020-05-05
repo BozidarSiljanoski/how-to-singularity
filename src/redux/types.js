@@ -13,3 +13,4 @@ export const SET_HOWS = 'SET_HOWS';
 export const SET_HOW = 'SET_HOW';
 export const LIKE_HOW = 'LIKE_HOW';
 export const UNLIKE_HOW = 'UNLIKE_HOW';
+export const DELETE_HOW = 'DELETE_HOW';

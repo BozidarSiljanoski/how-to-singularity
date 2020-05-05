@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import PropTypes from 'prop-types';
 import MyconButton from "../util/MyconButton";
+import DeleteHow from "./DeleteHow";
 
 // REDUX STUFF
 import {connect} from 'react-redux';
@@ -41,7 +42,7 @@ const useStyles = makeStyles({
 });
 
 
-function How(props) {
+ const How = (props) => {
   const likedHow = () => {
     if (props.user.likes && props.user.likes.find(like => like.howId === props.how.howId))
       return true;
@@ -56,7 +57,7 @@ function How(props) {
   dayjs.extend(relativeTime);
   const classes = useStyles();
 
-  const {how: {body, createdAt, userImage, userHandle, howId, likeCount, commentCount}, user: { authenticated }} = props;
+  const {how: {body, createdAt, userImage, userHandle, howId, likeCount, commentCount}, user: { authenticated, credentials: { handle } }} = props;
 
   const likeButton = (!authenticated) ? (
     <MyconButton tip="Like">
@@ -76,6 +77,9 @@ function How(props) {
     )
   );
 
+  const deleteButton = authenticated && userHandle === handle ? (
+    <DeleteHow howId={howId} />
+  ) : null;
 
   return (
     <Card className={classes.root + " howCard"}>
@@ -85,11 +89,18 @@ function How(props) {
                     variant="h5"
                     component={Link}
                     to={`/users/${userHandle}`}
-                    color="primary" className={classes.uHandle}>{userHandle + ' Asked'}</Typography>
+                    color="primary" className={classes.uHandle}>
+          {userHandle + ' Asked'}
+        </Typography>
+        {deleteButton}
         <Typography
-          variant="body2">{dayjs(createdAt).fromNow()}</Typography>
+          variant="body2">
+          {dayjs(createdAt).fromNow()}
+        </Typography>
         <Typography
-          variant="body1">{body}</Typography>
+          variant="body1">
+          {body}
+        </Typography>
         {likeButton}
         <span>{likeCount} Likes</span>
         <MyconButton tip="Comments" btnClassName={classes.button}>

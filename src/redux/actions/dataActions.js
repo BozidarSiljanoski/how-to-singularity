@@ -1,4 +1,10 @@
-import {LOADING_DATA, SET_HOWS, LIKE_HOW, UNLIKE_HOW} from "../types";
+import {
+  LOADING_DATA,
+  SET_HOWS,
+  LIKE_HOW,
+  UNLIKE_HOW,
+  DELETE_HOW
+} from "../types";
 import axios from 'axios';
 
 export const getUserData = (userHandle) => dispatch => {
@@ -58,4 +64,12 @@ export const unlikeHow = (howId) => dispatch => {
       })
     })
     .catch(err => console.log(err))
+};
+
+export const deleteHow = (howId) => dispatch => {
+  axios.delete(`/how/${howId}`)
+    .then(() => {
+      dispatch({ type: DELETE_HOW, payload: howId})
+    })
+    .catch(err => console.log(err));
 };
